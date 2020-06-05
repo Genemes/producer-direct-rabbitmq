@@ -1,0 +1,21 @@
+#producer-direct
+server:
+  port: 8081
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+    request:
+      exchange:
+        producer: direct.boleto
+      routing-key:
+        producer: direct.routingkey.boleto
+      dead-letter:
+        producer: direct.deadletter.boleto
+      parking-lot:
+        producer: direct.parkinglot.boleto
+      data-exception:
+        producer: direct.dataexception.boleto
