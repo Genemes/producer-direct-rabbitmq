@@ -1,15 +1,20 @@
-package com.genesedev.rabbitmq.producer.domain;
+package com.genesedev.rabbitmq.consumer.domain;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
-public class BoletoQueue implements Serializable {
+public class Boleto {
 
     private String description;
     private float payValue;
     private LocalDate dueDate;
 
-    public BoletoQueue() {}
+    public Boleto() {}
+
+    public Boleto(String description, float payValue, LocalDate dueDate){
+        this.description = description;
+        this.payValue = payValue;
+        this.dueDate = dueDate;
+    }
 
     public String getDescription() {
         return description;
@@ -37,8 +42,8 @@ public class BoletoQueue implements Serializable {
 
     @Override
     public String toString() {
-        return "{ description: "+ description + ", " +
-                "payValue:" + payValue + ", " +
-                "dueDate:" + dueDate +"}";
+        return "Description: " + description + " | " +
+                " payValue=" + payValue + " | " +
+                " dueDate=" + dueDate;
     }
 }

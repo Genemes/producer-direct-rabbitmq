@@ -3,10 +3,9 @@ package com.genesedev.rabbitmq.consumer.amqp.implementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.genesedev.rabbitmq.consumer.amqp.AmqpRePublish;
-import com.genesedev.rabbitmq.consumer.domain.BoletoQueue;
+import com.genesedev.rabbitmq.consumer.domain.Boleto;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,11 +16,14 @@ import java.util.*;
 @Component
 public class RePublishRabbitMQ implements AmqpRePublish {
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private  ObjectMapper objectMapper;
+    private final  ObjectMapper objectMapper;
+
+    public RePublishRabbitMQ(RabbitTemplate template, ObjectMapper mapper){
+        this.rabbitTemplate = template;
+        this.objectMapper = mapper;
+    }
 
     @Value("${spring.rabbitmq.request.exchange.producer}")
     private String exchange;
@@ -61,7 +63,7 @@ public class RePublishRabbitMQ implements AmqpRePublish {
             } else {
                 //lógica para enviar para a fila correta
                 String failedMessage = new String(message.getBody(), StandardCharsets.UTF_8);
-                BoletoQueue myMessage = null;
+                Boleto myMessage = null;
                 try {
                     myMessage = convertBoletoQueue(failedMessage);
                 } catch (JsonProcessingException e) {
@@ -90,18 +92,18 @@ public class RePublishRabbitMQ implements AmqpRePublish {
         return messages;
     }
 
-    private BoletoQueue convertBoletoQueue(String json) throws JsonProcessingException {
-        return  objectMapper.readValue(json, BoletoQueue.class);
+    private Boleto convertBoletoQueue(String json) throws JsonProcessingException {
+        return  objectMapper.readValue(json, Boleto.class);
     }
 
-    private String getQueue(BoletoQueue myMessage){
-        String retorno = queue;
+    private String getQueue(Boleto myMessage){
         if("erro".equalsIgnoreCase(myMessage.getDescription())) {
-            retorno = parkingLot;
+            return parkingLot;
         }else if(myMessage.getDueDate().isBefore(hoje)) {
-            retorno = dataException;
+            return dataException;
+        } else {
+            return queue;
         }
-        return retorno;
     }
 
 }

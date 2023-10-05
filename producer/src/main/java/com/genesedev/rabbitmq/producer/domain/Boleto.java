@@ -1,14 +1,15 @@
-package com.genesedev.rabbitmq.consumer.domain;
+package com.genesedev.rabbitmq.producer.domain;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class BoletoQueue {
+public class Boleto implements Serializable {
 
     private String description;
     private float payValue;
     private LocalDate dueDate;
 
-    public BoletoQueue() {}
+    public Boleto() {}
 
     public String getDescription() {
         return description;
@@ -36,8 +37,8 @@ public class BoletoQueue {
 
     @Override
     public String toString() {
-        return "Description: " + description + " | " +
-                " payValue=" + payValue + " | " +
-                " dueDate=" + dueDate;
+        return "{ description: "+ description + ", " +
+                "payValue:" + payValue + ", " +
+                "dueDate:" + dueDate +"}";
     }
 }
